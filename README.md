@@ -1,6 +1,7 @@
 # hipay
 Plugin Hipay for Magix CMS
 
+![Plugin Hipay Magix CMS](https://cloud.githubusercontent.com/assets/356674/12261264/306b16c4-b920-11e5-9ae4-f7a9d90940e8.jpg "Plugin Hipay pour Magix CMS")
 Authors
 -------
 
