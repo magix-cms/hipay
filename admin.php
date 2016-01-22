@@ -166,7 +166,7 @@ class plugins_hipay_admin extends DBHipay
             ),
             'icon'=> array(
                 'type'=>'font',
-                'name'=>'fa fa-credit-card'
+                'name'=>'fa fa-credit-card-alt'
             )
         );
     }
