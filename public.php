@@ -5,6 +5,10 @@ require_once 'mapi/mapi_package.php';
  * Class plugins_hipay_public
  */
 class plugins_hipay_public extends DBHipay{
+    protected $template,$modelSystem;
+    /**
+     * @var array
+     */
     public $urlprocess = array(
         'seturlok'=>'/payment/success/',
         'seturlnook'=>'/payment/success/',
@@ -18,6 +22,7 @@ class plugins_hipay_public extends DBHipay{
     public function __construct()
     {
         $this->template = new frontend_controller_plugins();
+        $this->modelSystem = new magixglobal_model_system();
     }
 
     /**
@@ -63,7 +68,16 @@ class plugins_hipay_public extends DBHipay{
      */
     public function getData($setParams)
     {
-        $this->template->configLoad();
+        //Charge le fichier de traduction
+        frontend_model_template::addConfigFile(
+            array(
+                $this->modelSystem->base_path().'plugins/hipay/i18n'
+            ),
+            array(
+                'public_local_',
+            )
+            ,false
+        );
         // Chargement des données Hipay en base de données
         $data = $this->setData();
         //Production : https://payment.hipay.com/order/
