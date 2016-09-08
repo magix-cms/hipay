@@ -21,27 +21,13 @@ var MC_Hipay = (function($, window, document, undefined){
             onsubmit: true,
             event: 'submit',
             rules: {
-                mailhack: {
-                     required: true,
-                     email: true
-                 },
-                 pwaccount: {
+                wsLogin: {
                      required: true
                  },
-                setaccount: {
-                    required: true
-                },
-                setmarchantsiteid: {
-                    required: true
-                },
-                mailcart: {
-                    required: true,
-                    email: true
-                },
-                setcategory: {
-                    required: true
-                },
-                signkey: {
+                wsPassword: {
+                     required: true
+                 },
+                websiteId: {
                     required: true
                 },
                 formaction: {

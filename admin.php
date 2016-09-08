@@ -3,7 +3,7 @@ class plugins_hipay_admin extends DBHipay
 {
     protected $header, $template, $message;
     public static $notify = array('plugin' => 'true');
-    public $getlang, $plugin, $edit, $id, $getpage, $mailhack,$pwaccount,$setaccount,$setmarchantsiteid,$mailcart,$setcategory,$signkey,$formaction;
+    public $getlang, $plugin, $edit, $id, $getpage, $wsLogin,$wsPassword,$websiteId,$signkey,$formaction;
 
     /**
      * constructeur
@@ -34,23 +34,14 @@ class plugins_hipay_admin extends DBHipay
             $this->id = (integer)magixcjquery_filter_isVar::isPostNumeric($_GET['id']);
         }
         // POST
-        if (magixcjquery_filter_request::isPost('mailhack')) {
-            $this->mailhack = magixcjquery_form_helpersforms::inputClean($_POST['mailhack']);
+        if (magixcjquery_filter_request::isPost('wsLogin')) {
+            $this->wsLogin = magixcjquery_form_helpersforms::inputClean($_POST['wsLogin']);
         }
-        if (magixcjquery_filter_request::isPost('pwaccount')) {
-            $this->pwaccount = magixcjquery_form_helpersforms::inputClean($_POST['pwaccount']);
+        if (magixcjquery_filter_request::isPost('wsPassword')) {
+            $this->wsPassword = magixcjquery_form_helpersforms::inputClean($_POST['wsPassword']);
         }
-        if (magixcjquery_filter_request::isPost('setaccount')) {
-            $this->setaccount = magixcjquery_form_helpersforms::inputClean($_POST['setaccount']);
-        }
-        if (magixcjquery_filter_request::isPost('setmarchantsiteid')) {
-            $this->setmarchantsiteid = magixcjquery_form_helpersforms::inputClean($_POST['setmarchantsiteid']);
-        }
-        if (magixcjquery_filter_request::isPost('mailcart')) {
-            $this->mailcart = magixcjquery_form_helpersforms::inputClean($_POST['mailcart']);
-        }
-        if (magixcjquery_filter_request::isPost('setcategory')) {
-            $this->setcategory = magixcjquery_form_helpersforms::inputClean($_POST['setcategory']);
+        if (magixcjquery_filter_request::isPost('websiteId')) {
+            $this->websiteId = magixcjquery_form_helpersforms::inputClean($_POST['websiteId']);
         }
         if (magixcjquery_filter_request::isPost('signkey')) {
             $this->signkey = magixcjquery_form_helpersforms::inputClean($_POST['signkey']);
@@ -86,14 +77,11 @@ class plugins_hipay_admin extends DBHipay
     private function setData($id){
         $data = parent::selectOne($id);
         return array(
-            'mailhack'              =>  $data['mailhack'],
-            'pwaccount'             =>  $data['pwaccount'],
-            'setaccount'            =>  $data['setaccount'],
-            'setmarchantsiteid'     =>  $data['setmarchantsiteid'],
-            'mailcart'              =>  $data['mailcart'],
-            'setcategory'           =>  $data['setcategory'],
-            'signkey'               =>  $data['signkey'],
-            'formaction'            =>  $data['formaction']
+            'wsLogin'              =>  $data['wsLogin'],
+            'wsPassword'           =>  $data['wsPassword'],
+            'websiteId'            =>  $data['websiteId'],
+            'signkey'              =>  $data['signkey'],
+            'formaction'           =>  $data['formaction']
         );
     }
 
@@ -137,17 +125,14 @@ class plugins_hipay_admin extends DBHipay
     public function run()
     {
         if (self::install_table($this->template) == true) {
-            if (isset($this->mailhack)) {
+            if (isset($this->wsLogin)) {
                 $control = parent::selectOne();
                 $this->save(
                     array(
                         'edit'                  =>  $control['idhipay'],
-                        'mailhack'              =>  $this->mailhack,
-                        'pwaccount'             =>  $this->pwaccount,
-                        'setaccount'            =>  $this->setaccount,
-                        'setmarchantsiteid'     =>  $this->setmarchantsiteid,
-                        'mailcart'              =>  $this->mailcart,
-                        'setcategory'           =>  $this->setcategory,
+                        'wsLogin'               =>  $this->wsLogin,
+                        'wsPassword'            =>  $this->wsPassword,
+                        'websiteId'             =>  $this->websiteId,
                         'signkey'               =>  $this->signkey,
                         'formaction'            =>  $this->formaction
                     )
@@ -199,17 +184,14 @@ class DBHipay
      */
     protected function insert($data){
         if(is_array($data)){
-            $sql = 'INSERT INTO mc_plugins_hipay (mailhack,pwaccount,setaccount,setmarchantsiteid,mailcart,setcategory,signkey,formaction)
-		    VALUE(:mailhack,:pwaccount,:setaccount,:setmarchantsiteid,:mailcart,:setcategory,:signkey,:formaction)';
+            $sql = 'INSERT INTO mc_plugins_hipay (wsLogin,wsPassword,websiteId,signkey,formaction)
+		    VALUE(:wsLogin,:wsPassword,:websiteId,:setmarchantsiteid,:mailcart,:setcategory,:signkey,:formaction)';
             magixglobal_model_db::layerDB()->insert($sql,
                 array(
-                    ':mailhack'              =>  $data['mailhack'],
-                    ':pwaccount'             =>  $data['pwaccount'],
-                    ':setaccount'            =>  $data['setaccount'],
-                    ':setmarchantsiteid'     =>  $data['setmarchantsiteid'],
-                    ':mailcart'              =>  $data['mailcart'],
-                    ':setcategory'           =>  $data['setcategory'],
-                    ':signkey'               =>  $data['signkey'],
+                    ':wsLogin'              =>  $data['wsLogin'],
+                    ':wsPassword'             =>  $data['wsPassword'],
+                    ':websiteId'            =>  $data['websiteId'],
+                    ':signkey'              =>  $data['signkey'],
                     ':formaction'            =>  $data['formaction']
                 ));
         }
@@ -223,18 +205,14 @@ class DBHipay
     protected function uData($data){
         if(is_array($data)){
             $sql = 'UPDATE mc_plugins_hipay
-            SET mailhack=:mailhack,pwaccount=:pwaccount,setaccount=:setaccount,setmarchantsiteid=:setmarchantsiteid,
-            mailcart=:mailcart,setcategory=:setcategory,signkey=:signkey,formaction=:formaction
+            SET wsLogin=:wsLogin,wsPassword=:wsPassword,websiteId=:websiteId,signkey=:signkey,formaction=:formaction
             WHERE idhipay=:edit';
             magixglobal_model_db::layerDB()->update($sql,
                 array(
                     ':edit'	                =>  $data['edit'],
-                    ':mailhack'             =>  $data['mailhack'],
-                    ':pwaccount'            =>  $data['pwaccount'],
-                    ':setaccount'           =>  $data['setaccount'],
-                    ':setmarchantsiteid'    =>  $data['setmarchantsiteid'],
-                    ':mailcart'             =>  $data['mailcart'],
-                    ':setcategory'          =>  $data['setcategory'],
+                    ':wsLogin'             =>  $data['wsLogin'],
+                    ':wsPassword'            =>  $data['wsPassword'],
+                    ':websiteId'           =>  $data['websiteId'],
                     ':signkey'              =>  $data['signkey'],
                     ':formaction'           =>  $data['formaction']
                 ));

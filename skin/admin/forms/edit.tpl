@@ -6,45 +6,29 @@
     <div class="row">
         <div class="form-group">
             <div class="col-lg-6 col-md-6">
-                <label for="pspid_og">Mailhack  :</label>
-                <input type="text" class="form-control" id="mailhack" name="mailhack" value="{$dataHipay.mailhack}" size="50" />
+                <label for="pspid_og">wsLogin  :</label>
+                <input type="text" class="form-control" id="wsLogin" name="wsLogin" value="{$dataHipay.wsLogin}" size="50" />
             </div>
             <div class="col-lg-6 col-md-6">
-                <label for="pwaccount">Pwaccount :</label>
-                <input type="text" class="form-control" id="pwaccount" name="pwaccount" value="{$dataHipay.pwaccount}" size="50" />
+                <label for="wsPassword">wsPassword :</label>
+                <input type="text" class="form-control" id="wsPassword" name="wsPassword" value="{$dataHipay.wsPassword}" size="50" />
             </div>
         </div>
     </div>
     <div class="row">
         <div class="form-group">
             <div class="col-lg-6 col-md-6">
-                <label for="setaccount">Setaccount :</label>
-                <input type="text" class="form-control" id="setaccount" name="setaccount" value="{$dataHipay.setaccount}" size="50" />
+                <label for="websiteId">websiteId :</label>
+                <input type="text" class="form-control" id="websiteId" name="websiteId" value="{$dataHipay.websiteId}" size="50" />
             </div>
-            <div class="col-lg-6 col-md-6">
-                <label for="setmarchantsiteid">Setmarchantsiteid :</label>
-                <input type="text" class="form-control" id="setmarchantsiteid" name="setmarchantsiteid" value="{$dataHipay.setmarchantsiteid}" size="50" />
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group">
-            <div class="col-lg-6 col-md-6">
-                <label for="mailcart">Mailcart :</label>
-                <input type="text" class="form-control" id="mailcart" name="mailcart" value="{$dataHipay.mailcart}" size="50" />
-            </div>
-            <div class="col-lg-6 col-md-6">
-                <label for="setcategory">Setcategory :</label>
-                <input type="text" class="form-control" id="setcategory" name="setcategory" value="{$dataHipay.setcategory}" size="50" />
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group">
             <div class="col-lg-6 col-md-6">
                 <label for="signkey">Signkey :</label>
                 <input type="text" class="form-control" id="signkey" name="signkey" value="{$dataHipay.signkey}" size="50" />
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
             <div class="col-lg-6 col-md-6">
                 <label for="formaction">Action :</label>
                 <select class="form-control" id="formaction" name="formaction">
