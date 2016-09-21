@@ -30,6 +30,9 @@ var MC_Hipay = (function($, window, document, undefined){
                 websiteId: {
                     required: true
                 },
+                customerIpAddress: {
+                    required: true
+                },
                 formaction: {
                     required: true
                 }

@@ -6,11 +6,11 @@
     <div class="row">
         <div class="form-group">
             <div class="col-lg-6 col-md-6">
-                <label for="pspid_og">wsLogin  :</label>
+                <label for="pspid_og">wsLogin* :</label>
                 <input type="text" class="form-control" id="wsLogin" name="wsLogin" value="{$dataHipay.wsLogin}" size="50" />
             </div>
             <div class="col-lg-6 col-md-6">
-                <label for="wsPassword">wsPassword :</label>
+                <label for="wsPassword">wsPassword* :</label>
                 <input type="text" class="form-control" id="wsPassword" name="wsPassword" value="{$dataHipay.wsPassword}" size="50" />
             </div>
         </div>
@@ -18,19 +18,23 @@
     <div class="row">
         <div class="form-group">
             <div class="col-lg-6 col-md-6">
-                <label for="websiteId">websiteId :</label>
+                <label for="websiteId">websiteId* :</label>
                 <input type="text" class="form-control" id="websiteId" name="websiteId" value="{$dataHipay.websiteId}" size="50" />
             </div>
             <div class="col-lg-6 col-md-6">
-                <label for="signkey">Signkey :</label>
-                <input type="text" class="form-control" id="signkey" name="signkey" value="{$dataHipay.signkey}" size="50" />
+                <label for="customerIpAddress">customerIpAddress* :</label>
+                <input type="text" class="form-control" id="customerIpAddress" name="customerIpAddress" value="{$dataHipay.customerIpAddress}" size="50" />
             </div>
         </div>
     </div>
     <div class="row">
         <div class="form-group">
             <div class="col-lg-6 col-md-6">
-                <label for="formaction">Action :</label>
+                <label for="signkey">Signkey :</label>
+                <input type="text" class="form-control" id="signkey" name="signkey" value="{$dataHipay.signkey}" size="50" />
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <label for="formaction">Action* :</label>
                 <select class="form-control" id="formaction" name="formaction">
                     <option value="">Sélectionner une action</option>
                     {foreach $collectionformAction as $key => $value}

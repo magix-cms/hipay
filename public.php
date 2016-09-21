@@ -3,7 +3,7 @@
  * Class plugins_hipay_public
  */
 class plugins_hipay_public extends DBHipay{
-    protected $template,$modelSystem;
+    protected $template,$modelSystem,$about;
     /**
      * @var array
      */
@@ -22,6 +22,7 @@ class plugins_hipay_public extends DBHipay{
     {
         $this->template = new frontend_controller_plugins();
         $this->modelSystem = new magixglobal_model_system();
+        $this->about = new plugins_about_public();
     }
 
     /**
@@ -41,6 +42,7 @@ class plugins_hipay_public extends DBHipay{
                 'wsLogin'               =>  $data['wsLogin'],
                 'wsPassword'            =>  $data['wsPassword'],
                 'websiteId'             =>  $data['websiteId'],
+                'customerIpAddress'     =>  $data['customerIpAddress'],
                 'signkey'               =>  $data['signkey'],
                 'formaction'            =>  $data['formaction'],
                 'iso'                   =>  frontend_model_template::current_Language()
@@ -91,7 +93,7 @@ class plugins_hipay_public extends DBHipay{
      */
     private function getCategory($data){
         $object = simplexml_load_string($this->setCategory($data), null, LIBXML_NOCDATA);
-        return $object->{'categoriesList'}->{'category'}->attributes();
+        return $object->{'categoriesList'}->{'category'}['id'];
     }
 
     /**
@@ -118,6 +120,7 @@ class plugins_hipay_public extends DBHipay{
             );
             // Chargement des données Hipay en base de données
             $data = $this->setData();
+            $collection = $this->about->getData();
             if ($data != null) {
                 if ($data['formaction'] === 'test') {
                     $urlOrder = 'https://test-ws.hipay.com/soap/payment-v2?wsdl';
@@ -156,7 +159,7 @@ class plugins_hipay_public extends DBHipay{
                         'wsPassword'    => $data['wsPassword'],
                         'websiteId'     => $data['websiteId'],
                         'categoryId'    => $getCategory,
-                        'description'   => $this->template->getConfigVars('order_on') . ' ' . $this->template->getConfigVars('website'),
+                        'description'   => $this->template->getConfigVars('order_on') . ' ' . $collection['name'],
                         //'method' => 'iframe',
                         'freeData' => array(
                             array(
@@ -172,12 +175,14 @@ class plugins_hipay_public extends DBHipay{
                         'amount' => $setParams['amount'],
                         'rating' => 'ALL',
                         'locale' => $setlocal,
-                        //'customerIpAddress' => '46.182.41.35',
+                        'customerIpAddress' => $data['customerIpAddress'],
                         'manualCapture' => '0',
                         'executionDate' => $executionDate,
                         'customerEmail' => $setParams['customerEmail'],
                         'urlCallback'   => $urlwebsite . $setParams['plugin'] . $seturl['seturlack'],
-                        'urlAccept'     => $urlwebsite . $setParams['plugin'] . $seturl['seturlok']
+                        'urlAccept'     => $urlwebsite . $setParams['plugin'] . $seturl['seturlok'],
+                        'urlCancel'     => $urlwebsite . $setParams['plugin'] . $seturl['seturlcancel'],
+                        'urlDecline'    => $urlwebsite . $setParams['plugin'] . $seturl['seturlexception']
                     )));
                     //print_r($result);
                     $forms_hipay = '<a href="' . $result->{'generateResult'}->{'redirectUrl'} . '"><img src="https://www.hipay.com/images/i18n/' . $data['iso'] . '/bt_payment_1.png" /></a>';

@@ -3,7 +3,7 @@ class plugins_hipay_admin extends DBHipay
 {
     protected $header, $template, $message;
     public static $notify = array('plugin' => 'true');
-    public $getlang, $plugin, $edit, $id, $getpage, $wsLogin,$wsPassword,$websiteId,$signkey,$formaction;
+    public $getlang, $plugin, $edit, $id, $getpage, $wsLogin,$wsPassword,$websiteId,$customerIpAddress,$signkey,$formaction;
 
     /**
      * constructeur
@@ -43,6 +43,9 @@ class plugins_hipay_admin extends DBHipay
         if (magixcjquery_filter_request::isPost('websiteId')) {
             $this->websiteId = magixcjquery_form_helpersforms::inputClean($_POST['websiteId']);
         }
+        if (magixcjquery_filter_request::isPost('customerIpAddress')) {
+            $this->customerIpAddress = magixcjquery_form_helpersforms::inputClean($_POST['customerIpAddress']);
+        }
         if (magixcjquery_filter_request::isPost('signkey')) {
             $this->signkey = magixcjquery_form_helpersforms::inputClean($_POST['signkey']);
         }
@@ -80,6 +83,7 @@ class plugins_hipay_admin extends DBHipay
             'wsLogin'              =>  $data['wsLogin'],
             'wsPassword'           =>  $data['wsPassword'],
             'websiteId'            =>  $data['websiteId'],
+            'customerIpAddress'    =>  $data['customerIpAddress'],
             'signkey'              =>  $data['signkey'],
             'formaction'           =>  $data['formaction']
         );
@@ -133,6 +137,7 @@ class plugins_hipay_admin extends DBHipay
                         'wsLogin'               =>  $this->wsLogin,
                         'wsPassword'            =>  $this->wsPassword,
                         'websiteId'             =>  $this->websiteId,
+                        'customerIpAddress'     =>  $this->customerIpAddress,
                         'signkey'               =>  $this->signkey,
                         'formaction'            =>  $this->formaction
                     )
@@ -184,15 +189,16 @@ class DBHipay
      */
     protected function insert($data){
         if(is_array($data)){
-            $sql = 'INSERT INTO mc_plugins_hipay (wsLogin,wsPassword,websiteId,signkey,formaction)
-		    VALUE(:wsLogin,:wsPassword,:websiteId,:setmarchantsiteid,:mailcart,:setcategory,:signkey,:formaction)';
+            $sql = 'INSERT INTO mc_plugins_hipay (wsLogin,wsPassword,websiteId,customerIpAddress,signkey,formaction)
+		    VALUE(:wsLogin,:wsPassword,:websiteId,:customerIpAddress,:signkey,:formaction)';
             magixglobal_model_db::layerDB()->insert($sql,
                 array(
                     ':wsLogin'              =>  $data['wsLogin'],
-                    ':wsPassword'             =>  $data['wsPassword'],
+                    ':wsPassword'           =>  $data['wsPassword'],
                     ':websiteId'            =>  $data['websiteId'],
+                    ':customerIpAddress'    =>  $data['customerIpAddress'],
                     ':signkey'              =>  $data['signkey'],
-                    ':formaction'            =>  $data['formaction']
+                    ':formaction'           =>  $data['formaction']
                 ));
         }
 
@@ -205,14 +211,15 @@ class DBHipay
     protected function uData($data){
         if(is_array($data)){
             $sql = 'UPDATE mc_plugins_hipay
-            SET wsLogin=:wsLogin,wsPassword=:wsPassword,websiteId=:websiteId,signkey=:signkey,formaction=:formaction
+            SET wsLogin=:wsLogin,wsPassword=:wsPassword,websiteId=:websiteId,customerIpAddress=:customerIpAddress,signkey=:signkey,formaction=:formaction
             WHERE idhipay=:edit';
             magixglobal_model_db::layerDB()->update($sql,
                 array(
                     ':edit'	                =>  $data['edit'],
-                    ':wsLogin'             =>  $data['wsLogin'],
-                    ':wsPassword'            =>  $data['wsPassword'],
-                    ':websiteId'           =>  $data['websiteId'],
+                    ':wsLogin'              =>  $data['wsLogin'],
+                    ':wsPassword'           =>  $data['wsPassword'],
+                    ':websiteId'            =>  $data['websiteId'],
+                    ':customerIpAddress'    =>  $data['customerIpAddress'],
                     ':signkey'              =>  $data['signkey'],
                     ':formaction'           =>  $data['formaction']
                 ));
