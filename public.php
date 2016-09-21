@@ -185,7 +185,7 @@ class plugins_hipay_public extends DBHipay{
                         'urlDecline'    => $urlwebsite . $setParams['plugin'] . $seturl['seturlexception']
                     )));
                     //print_r($result);
-                    $forms_hipay = '<a href="' . $result->{'generateResult'}->{'redirectUrl'} . '"><img src="https://www.hipay.com/images/i18n/' . $data['iso'] . '/bt_payment_1.png" /></a>';
+                    $forms_hipay = '<a href="' . $result->{'generateResult'}->{'redirectUrl'} . '"><img src="https://www.hipaydirect.com/images/i18n/' . $data['iso'] . '/bt_payment_8.png" /></a>';
                     return $forms_hipay;
                 }
             }
