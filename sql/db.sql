@@ -6,5 +6,6 @@ CREATE TABLE IF NOT EXISTS `mc_plugins_hipay` (
   `customerIpAddress` varchar(20) NOT NULL,
   `signkey` varchar(45) DEFAULT NULL,
   `formaction` varchar(40) NOT NULL DEFAULT 'test',
+  `categoryId` smallint(3) unsigned DEFAULT NULL,
   PRIMARY KEY (`idhipay`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

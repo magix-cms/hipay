@@ -47,7 +47,8 @@ var MC_Hipay = (function($, window, document, undefined){
                     beforeParams:function(){},
                     successParams:function(e){
                         $.nicenotify.initbox(e,{
-                            display:true
+                            display:true,
+                            refresh: true
                         });
                     }
                 });

@@ -45,55 +45,10 @@ class plugins_hipay_public extends DBHipay{
                 'customerIpAddress'     =>  $data['customerIpAddress'],
                 'signkey'               =>  $data['signkey'],
                 'formaction'            =>  $data['formaction'],
+                'categoryId'            =>  $data['categoryId'],
                 'iso'                   =>  frontend_model_template::current_Language()
             );
         }
-    }
-
-    /**
-     * @param $data
-     * @return mixed|void
-     */
-    private function setCategory($data){
-        //https://test-payment.hipay.com/order/list-categories/id/
-        $options = array(
-            CURLOPT_RETURNTRANSFER  => true,
-            CURLINFO_HEADER_OUT     => true,
-            CURLOPT_URL             => $data['url'],
-            CURLOPT_HTTPHEADER      => array('Content-type: text/xml','Accept: text/xml'),
-            CURLOPT_TIMEOUT         => 300,
-            CURLOPT_CONNECTTIMEOUT  => 300,
-            CURLOPT_SSL_VERIFYPEER   => false,
-            CURLOPT_CUSTOMREQUEST   => "GET"
-        );
-
-        $ch = curl_init();
-        curl_setopt_array($ch, $options);
-
-        $response = curl_exec($ch);
-        $curlInfo = curl_getinfo($ch);
-        curl_close($ch);
-        if (array_key_exists('debug', $data) && $data['debug']) {
-            var_dump($curlInfo);
-            var_dump($response);
-        }
-        if ($curlInfo['http_code'] == '200') {
-            if ($response) {
-                return $response;
-            }
-        }elseif($curlInfo['http_code'] == '0'){
-            print 'Error HTTP: code 0';
-            return;
-        }
-    }
-
-    /**
-     * @param $data
-     * @return mixed
-     */
-    private function getCategory($data){
-        $object = simplexml_load_string($this->setCategory($data), null, LIBXML_NOCDATA);
-        return $object->{'categoriesList'}->{'category'}['id'];
     }
 
     /**
@@ -124,21 +79,14 @@ class plugins_hipay_public extends DBHipay{
             if ($data != null) {
                 if ($data['formaction'] === 'test') {
                     $urlOrder = 'https://test-ws.hipay.com/soap/payment-v2?wsdl';
-                    $urlCategory = 'https://test-payment.hipay.com/order/list-categories/id/';
                 } elseif ($data['formaction'] === 'production') {
                     $urlOrder = 'https://ws.hipay.com/soap/payment-v2?wsdl';
-                    $urlCategory = 'https://payment.hipay.com/order/list-categories/id/';
                 }
-                $getCategory = $this->getCategory(
-                    array(
-                        'url' => $urlCategory . $data['websiteId'],
-                        'debug' => false
-                    )
-                );
+
                 $urlwebsite = magixcjquery_html_helpersHtml::getUrl() . '/' . $data['iso'] . '/';
                 // seturl pour les notifications et process
                 $seturl = $this->setUrl();
-                if ($getCategory) {
+                if ($urlOrder) {
                     // STEP 1 : soap flow options
                     $options = array(
                         'compression'   => SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP,
@@ -158,7 +106,7 @@ class plugins_hipay_public extends DBHipay{
                         'wsLogin'       => $data['wsLogin'],
                         'wsPassword'    => $data['wsPassword'],
                         'websiteId'     => $data['websiteId'],
-                        'categoryId'    => $getCategory,
+                        'categoryId'    => $data['categoryId'],
                         'description'   => $this->template->getConfigVars('order_on') . ' ' . $collection['name'],
                         //'method' => 'iframe',
                         'freeData' => array(
