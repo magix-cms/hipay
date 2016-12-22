@@ -22,12 +22,12 @@
 				</authors>
 				<version>
 					<date_create>11/01/2015</date_create>
-					<date_update>21/09/2016</date_update>
-					<number>2.0.0</number>
+					<date_update>22/12/2016</date_update>
+					<number>2.1.0</number>
 					<phase>Stable</phase>
 					<support>
-                        <ticket href="https://github.com/magix-cms/magixcms/issues"></ticket>
-                        <git href="https://github.com/magix-cms/magixcms"></git>
+                        <ticket href="https://github.com/magix-cms/hipay/issues"></ticket>
+                        <git href="https://github.com/magix-cms/hipay"></git>
 					</support>
 				</version>
 			</infos>
