@@ -3,7 +3,7 @@ class plugins_hipay_admin extends DBHipay
 {
     protected $header, $template, $message;
     public static $notify = array('plugin' => 'true');
-    public $getlang, $plugin, $edit, $id, $getpage, $wsLogin,$wsPassword,$websiteId,$customerIpAddress,$signkey,$formaction,$categoryId;
+    public $getlang, $plugin, $edit, $id, $getpage, $wsLogin,$wsPassword,$websiteId,$customerIpAddress,$signkey,$formaction,$categoryId, $getWebsiteId, $category;
 
     /**
      * constructeur
@@ -54,6 +54,13 @@ class plugins_hipay_admin extends DBHipay
         }
         if (magixcjquery_filter_request::isPost('categoryId')) {
             $this->categoryId = magixcjquery_form_helpersforms::inputClean($_POST['categoryId']);
+        }
+
+        if(magixcjquery_filter_request::isGet('websiteId')){
+            $this->getWebsiteId = magixcjquery_form_helpersforms::inputClean($_GET['websiteId']);
+        }
+        if(magixcjquery_filter_request::isGet('category')){
+            $this->category = magixcjquery_form_helpersforms::inputClean($_GET['category']);
         }
 
         $this->header = new magixglobal_model_header();
@@ -119,34 +126,72 @@ class plugins_hipay_admin extends DBHipay
      * @return mixed
      */
     private function setCategory($data){
-        $parseData = array();
-        $newData = array();
+
         $object = simplexml_load_string($this->setSoapCategory($data), null, LIBXML_NOCDATA);
+        if($data['getWebsiteId']){
+            if(isset($object->categoriesList)){
+                foreach ($object->children() as $key) {
 
-        foreach ($object->children() as $key) {
+                    foreach ($key->children() as $category => $value) {
 
-            foreach ($key->children() as $category => $value) {
+                        $parseData[strval($value['id'])]= strval($value);
+                    }
+                }
 
-                $parseData[strval($value['id'])]= strval($value);
+                foreach($parseData as $key => $value){
+                    $setData[] = array(
+                        'id'    =>  $key,
+                        'name'  =>  $value
+                    );
+                }
+                $newData = "true";//json_encode(array("true",$setData));
+            }else{
+                $newData = "false";
+            }
+        }else{
+            $parseData = array();
+            $newData = array();
+            if(isset($object->categoriesList)){
+                foreach ($object->children() as $key) {
+
+                    foreach ($key->children() as $category => $value) {
+
+                        $parseData[strval($value['id'])]= strval($value);
+                    }
+                }
+
+                foreach($parseData as $key => $value){
+                    $newData[] = array(
+                        'id'    =>  $key,
+                        'name'  =>  $value
+                    );
+                }
+            }else{
+                $newData = NULL;
             }
         }
-
-        foreach($parseData as $key => $value){
-            $newData[] = array(
-                'id'    =>  $key,
-                'name'  =>  $value
-            );
-        }
-
         return $newData;
     }
 
     /**
      * @return mixed
      */
-    private function getCategory(){
+    private function getCategory($getWebsiteId = false, $category = false){
+
         $config = parent::selectOne();
-        if($config['websiteId'] != null && $config['formaction'] != null){
+
+        if($getWebsiteId){
+            $websiteId = $getWebsiteId;
+        }else{
+            if($category){
+                $websiteId = $category;
+            }else{
+                $websiteId = $config['websiteId'];
+            }
+        }
+
+        if($websiteId != null && $config['formaction'] != null){
+
             if ($config['formaction'] === 'test') {
                 $urlOrder = 'https://test-ws.hipay.com/soap/payment-v2?wsdl';
                 $urlCategory = 'https://test-payment.hipay.com/order/list-categories/id/';
@@ -156,8 +201,9 @@ class plugins_hipay_admin extends DBHipay
             }
             return $this->setCategory(
                 array(
-                    'url' => $urlCategory . $config['websiteId'],
-                    'debug' => false
+                    'url' => $urlCategory . $websiteId,
+                    'debug' => false,
+                    'getWebsiteId' => $getWebsiteId
                 )
             );
         }
@@ -185,8 +231,20 @@ class plugins_hipay_admin extends DBHipay
      */
     private function getData(){
         $data = $this->setData();
-        $this->template->assign('getCategory',$this->getCategory());
+        if($data['websiteId'] != NULL){
+            $this->template->assign('getCategory',$this->getCategory());
+        }
         $this->template->assign('dataHipay', $data, true);
+    }
+
+    /**
+     * display category data via ajax
+     */
+    private function getCategoryData(){
+        $data = $this->setData();
+        $this->template->assign('dataHipay', $data, true);
+        $this->template->assign('getCategory',$this->getCategory(false,$this->category));
+        $this->template->display('loop/category.tpl');
     }
 
     /**
@@ -206,13 +264,17 @@ class plugins_hipay_admin extends DBHipay
     /**
      * @param $data
      */
-    private function save($data){
+    private function save($data,$config){
         if($data['edit'] != null){
             $this->update($data);
-            $this->message->getNotify('update',self::$notify);
+            if($config['msg']){
+                $this->message->getNotify('update',self::$notify);
+            }
         }else{
             $this->add($data);
-            $this->message->getNotify('add',self::$notify);
+            if($config['msg']) {
+                $this->message->getNotify('add', self::$notify);
+            }
         }
     }
     /**
@@ -222,7 +284,7 @@ class plugins_hipay_admin extends DBHipay
     {
         if (self::install_table($this->template) == true) {
             if (isset($this->wsLogin)) {
-                if(empty($this->categoryId)){
+                if(empty($this->categoryId) OR !isset($this->categoryId)){
                     $this->categoryId = null;
                 }
                 $control = parent::selectOne();
@@ -236,8 +298,26 @@ class plugins_hipay_admin extends DBHipay
                         'signkey'               =>  $this->signkey,
                         'formaction'            =>  $this->formaction,
                         'categoryId'            =>  $this->categoryId
+                    ),
+                    array(
+                        'msg'   =>  true
                     )
                 );
+            }elseif (isset($this->formaction) && !isset($this->wsLogin)) {
+                $control = parent::selectOne();
+                $this->save(
+                    array(
+                        'edit'                  =>  $control['idhipay'],
+                        'formaction'            =>  $this->formaction
+                    ),
+                    array(
+                        'msg'   =>  false
+                    )
+                );
+            }elseif(isset($this->getWebsiteId)){
+                print $this->getCategory($this->getWebsiteId);
+            }elseif(isset($this->category)){
+                $this->getCategoryData();
             }else{
                 $this->getData();
                 $this->template->display('list.tpl');
@@ -285,18 +365,27 @@ class DBHipay
      */
     protected function insert($data){
         if(is_array($data)){
-            $sql = 'INSERT INTO mc_plugins_hipay (wsLogin,wsPassword,websiteId,customerIpAddress,signkey,formaction)
-		    VALUE(:wsLogin,:wsPassword,:websiteId,:customerIpAddress,:signkey,:formaction,:categoryId)';
-            magixglobal_model_db::layerDB()->insert($sql,
-                array(
-                    ':wsLogin'              =>  $data['wsLogin'],
-                    ':wsPassword'           =>  $data['wsPassword'],
-                    ':websiteId'            =>  $data['websiteId'],
-                    ':customerIpAddress'    =>  $data['customerIpAddress'],
-                    ':signkey'              =>  $data['signkey'],
-                    ':formaction'           =>  $data['formaction'],
-                    ':categoryId'           =>  $data['categoryId']
-                ));
+            if($data['websiteId']) {
+                $sql = 'INSERT INTO mc_plugins_hipay (wsLogin,wsPassword,websiteId,customerIpAddress,signkey,formaction,categoryId)
+		        VALUE(:wsLogin,:wsPassword,:websiteId,:customerIpAddress,:signkey,:formaction,:categoryId)';
+                magixglobal_model_db::layerDB()->insert($sql,
+                    array(
+                        ':wsLogin' => $data['wsLogin'],
+                        ':wsPassword' => $data['wsPassword'],
+                        ':websiteId' => $data['websiteId'],
+                        ':customerIpAddress' => $data['customerIpAddress'],
+                        ':signkey' => $data['signkey'],
+                        ':formaction' => $data['formaction'],
+                        ':categoryId' => $data['categoryId']
+                    ));
+            }else{
+                $sql = 'INSERT INTO mc_plugins_hipay (formaction)
+		        VALUE(:formaction)';
+                magixglobal_model_db::layerDB()->insert($sql,
+                    array(
+                        ':formaction' => $data['formaction']
+                    ));
+            }
         }
 
     }
@@ -307,20 +396,34 @@ class DBHipay
      */
     protected function uData($data){
         if(is_array($data)){
-            $sql = 'UPDATE mc_plugins_hipay
-            SET wsLogin=:wsLogin,wsPassword=:wsPassword,websiteId=:websiteId,customerIpAddress=:customerIpAddress,signkey=:signkey,formaction=:formaction,categoryId=:categoryId
-            WHERE idhipay=:edit';
-            magixglobal_model_db::layerDB()->update($sql,
-                array(
-                    ':edit'	                =>  $data['edit'],
-                    ':wsLogin'              =>  $data['wsLogin'],
-                    ':wsPassword'           =>  $data['wsPassword'],
-                    ':websiteId'            =>  $data['websiteId'],
-                    ':customerIpAddress'    =>  $data['customerIpAddress'],
-                    ':signkey'              =>  $data['signkey'],
-                    ':formaction'           =>  $data['formaction'],
-                    ':categoryId'           =>  $data['categoryId']
-                ));
+            if($data['websiteId']){
+                $sql = 'UPDATE mc_plugins_hipay
+                SET wsLogin=:wsLogin,wsPassword=:wsPassword,websiteId=:websiteId,customerIpAddress=:customerIpAddress,
+                signkey=:signkey,formaction=:formaction,categoryId=:categoryId
+                WHERE idhipay=:edit';
+                magixglobal_model_db::layerDB()->update($sql,
+                    array(
+                        ':edit'	                =>  $data['edit'],
+                        ':wsLogin'              =>  $data['wsLogin'],
+                        ':wsPassword'           =>  $data['wsPassword'],
+                        ':websiteId'            =>  $data['websiteId'],
+                        ':customerIpAddress'    =>  $data['customerIpAddress'],
+                        ':signkey'              =>  $data['signkey'],
+                        ':formaction'           =>  $data['formaction'],
+                        ':categoryId'           =>  $data['categoryId']
+                    )
+                );
+            }else{
+                $sql = 'UPDATE mc_plugins_hipay
+                SET formaction=:formaction
+                WHERE idhipay=:edit';
+                magixglobal_model_db::layerDB()->update($sql,
+                    array(
+                        ':edit'	                =>  $data['edit'],
+                        ':formaction'           =>  $data['formaction']
+                    )
+                );
+            }
         }
     }
 }

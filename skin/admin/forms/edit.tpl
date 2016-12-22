@@ -20,29 +20,9 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="websiteId">websiteId* :</label>
-                <input type="text" class="form-control" id="websiteId" name="websiteId" value="{$dataHipay.websiteId}" size="50" />
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="customerIpAddress">customerIpAddress* :</label>
-                <input type="text" class="form-control" id="customerIpAddress" name="customerIpAddress" value="{$dataHipay.customerIpAddress}" size="50" />
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="signkey">Signkey :</label>
-                <input type="text" class="form-control" id="signkey" name="signkey" value="{$dataHipay.signkey}" size="50" />
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
                 <label for="formaction">Action* :</label>
-                <select class="form-control" id="formaction" name="formaction">
-                    <option value="">Sélectionner une action</option>
+                <select class="form-control" id="formaction" name="formaction" data-target-url="#setWebsiteId">
+                    <option value="" selected disabled>Sélectionner une action</option>
                     {foreach $collectionformAction as $key => $value}
                         {$selected  =   ''}
                         {if $dataHipay.formaction == $key}
@@ -53,25 +33,35 @@
                 </select>
             </div>
         </div>
-    </div>
-    <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="categoryId">Categorie* :</label>
-                <select class="form-control" id="categoryId" name="categoryId">
-                    <option value="">Sélectionner votre thématique secondaire (Voir Hipay)</option>
-                    {foreach $getCategory as $key => $value}
-                        {$selected  =   ''}
-                        {if $dataHipay.categoryId == $value.id}
-                            {$selected  =   ' selected'}
-                        {/if}
-                        <option{$selected} value="{$value.id}">{$value.name}</option>
-                    {/foreach}
-                </select>
+                <label for="customerIpAddress">customerIpAddress* :</label>
+                <input type="text" class="form-control" id="customerIpAddress" name="customerIpAddress" value="{$dataHipay.customerIpAddress}" size="50" />
             </div>
         </div>
     </div>
 
+    <div id="setWebsiteId" class="row collapse{if $dataHipay.formaction != NULL} in{/if}">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="websiteId">websiteId* :</label>
+                <input type="text" class="form-control optional-fields" id="websiteId" name="websiteId" value="{$dataHipay.websiteId}" data-target="#category" size="50" />
+            </div>
+        </div>
+    </div>
+    <div id="category" class="row collapse{if $dataHipay.websiteId != NULL} in{/if}">
+        {if $dataHipay.websiteId != NULL}
+            {include file="loop/category.tpl"}
+        {/if}
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="signkey">Signkey :</label>
+                <input type="text" class="form-control" id="signkey" name="signkey" value="{$dataHipay.signkey}" size="50" />
+            </div>
+        </div>
+    </div>
     <div class="btn-row">
         <input type="submit" class="btn btn-primary" value="{#save#|ucfirst}" />
     </div>
