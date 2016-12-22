@@ -21,6 +21,7 @@ Ce plugin est dédié a Magix CMS et travail avec Hipay Wallet et Hipay Direct.
  Requirements
    ------------
    * SOAP (http://php.net/manual/en/book.soap.php)
+   * CURL (http://php.net/manual/en/book.curl.php)
  
  Ressources
  -----
