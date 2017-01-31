@@ -28,8 +28,7 @@ Ce plugin est dédié a Magix CMS et travail avec Hipay Wallet et Hipay Direct.
    * CURL (http://php.net/manual/en/book.curl.php)
    
  ####Exemple d'utilisation dans votre panier
- <pre>
- <code>
+ ```php
  $hipay = new plugins_hipay_public();
  $hipayProcess = $hipay->getData(
      array(
@@ -42,9 +41,8 @@ Ce plugin est dédié a Magix CMS et travail avec Hipay Wallet et Hipay Direct.
          'customerEmail'=> 'mymail@myhost.com'
      )
  );
- </code>
- </pre>
- 
+````
+
  Ressources
  -----
   * https://www.hipay.com
