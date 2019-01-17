@@ -1,7 +1,7 @@
 # hipay
-Plugin Hipay for [magixcms](http://www.magix-cms.com)
+Plugin Hipay for [magixcms 3](https://www.magix-cms.com)
 
-![Plugin Hipay Magix CMS](https://cloud.githubusercontent.com/assets/356674/12261264/306b16c4-b920-11e5-9ae4-f7a9d90940e8.jpg "Plugin Hipay pour Magix CMS")
+![hipay-logo](https://user-images.githubusercontent.com/356674/51309535-eeeb3100-1a44-11e9-96b1-7ca3833cb1a3.png)
 
 ###version 
 
@@ -46,6 +46,6 @@ Ce plugin est dédié a Magix CMS et travail avec Hipay Wallet et Hipay Direct.
  Ressources
  -----
   * https://www.hipay.com
-  * http://www.magix-cms.com
+  * https://www.magix-cms.com
   
 
