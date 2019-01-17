@@ -1,11 +1,11 @@
-<div class="col-md-6">
+<div class="col-xs-12 col-sm-6">
     <div class="form-group">
-        <label for="categoryId">Categorie* :</label>
-        <select class="form-control" id="categoryId" name="categoryId">
+        <label for="categoryId">{#category#}* :</label>
+        <select name="categoryId" id="categoryId" class="form-control">
             <option value="">Sélectionner votre thématique secondaire (Voir Hipay)</option>
-            {foreach $getCategory as $key => $value}
+            {foreach $hipayCategory as $key => $value}
                 {$selected  =   ''}
-                {if $dataHipay.categoryId == $value.id}
+                {if $hipay.categoryid == $value.id}
                     {$selected  =   ' selected'}
                 {/if}
                 <option{$selected} value="{$value.id}">{$value.name}</option>

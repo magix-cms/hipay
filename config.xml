@@ -1,36 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- /*
- * MAGIX CMS Copyright (c) 2016 Gerits Aurelien,
+ * MAGIX CMS Copyright (c) 2008 - 2019 Gerits Aurelien,
+ * http://www.magix-cms.com
  * Dual licensed under the MIT AND GPL Version 3 licenses.
  *
- * Date: January 11 16:34 2016
+ * Date: May 22 16:15 2017
  */-->
 <config>
-	<acl>
-		<admin>
-			<authorized>
-				<allow_access>1</allow_access>
-			</authorized>
-			<infos>
-				<authors>
-					<author>
-						<name>Aurélien Gérits</name>
-						<link>
-							<website href="http://www.magix-cms.com" />
-						</link>
-					</author>
-				</authors>
-				<version>
-					<date_create>11/01/2015</date_create>
-					<date_update>22/12/2016</date_update>
-					<number>2.1.0</number>
-					<phase>Stable</phase>
-					<support>
-                        <ticket href="https://github.com/magix-cms/hipay/issues"></ticket>
-                        <git href="https://github.com/magix-cms/hipay"></git>
-					</support>
-				</version>
-			</infos>
-		</admin>
-	</acl>
+	<authorized>
+		<allow_access>*</allow_access>
+	</authorized>
+	<data>
+		<authors>
+			<author>
+				<name>Gerits Aurelien</name>
+				<website href="http://www.magix-cms.com" />
+			</author>
+		</authors>
+		<release>
+			<date_create>11/01/2015</date_create>
+			<date_update>17/01/2019</date_update>
+			<version>3.1</version>
+			<phase>Stable</phase>
+		</release>
+		<support>
+			<ticket href="https://github.com/magix-cms/hipay/issues" />
+			<git href="https://github.com/magix-cms/hipay" />
+		</support>
+	</data>
 </config>
