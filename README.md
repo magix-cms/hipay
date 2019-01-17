@@ -29,18 +29,13 @@ Ce plugin est dédié a Magix CMS et travail avec Hipay Wallet et Hipay Direct.
    
  ####Exemple d'utilisation dans votre panier
  ```php
- $hipay = new plugins_hipay_public();
- $hipayProcess = $hipay->getData(
-     array(
-         'plugin'    =>  'myplugincart',
-         'key'       =>  $session_key,
-         'order'     =>  $id_cart,
-         'amount'    =>  $amount,
-         'shipping'  =>  $shipping,
-         'locale'    =>  'fr',
-         'customerEmail'=> 'mymail@myhost.com'
-     )
- );
+ Uniquement par POST vers le plugin Hipay !!
+ //## Donnée obligatoire pour Hipay
+ $purchase = array('purchase'=> array('amount'=>'15.2','email'=>'mymail@mail.com'));
+ //## Donnée supplémentaire
+ $custom = array('custom'=>array(
+    'mydata1'=>'lorem ipsum'
+ ));
 ````
 
  Ressources
