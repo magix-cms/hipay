@@ -186,6 +186,12 @@ class plugins_hipay_public extends plugins_hipay_db{
                     }else{
                         $freeData = NULL;
                     }*/
+                    $logo = http_url::getUrl().'/skin/'.$this->template->themeSelected().'/img/logo/'.$this->template->getConfigVars('logo_img_mail');
+                    if(file_exists($logo)){
+                        $urlLogo = $logo;
+                    }else{
+                        $urlLogo = NULL;
+                    }
 
                     $result = $client->generate(array('parameters' => array(
                         'wsLogin'       => $setData['wsLogin'],
@@ -216,7 +222,8 @@ class plugins_hipay_public extends plugins_hipay_db{
                         'urlCallback'   => $setUrl['callback'],
                         'urlAccept'     => $setUrl['accept'],
                         'urlCancel'     => $setUrl['cancel'],
-                        'urlDecline'    => $setUrl['decline']
+                        'urlDecline'    => $setUrl['decline'],
+                        'urlLogo'       =>  $urlLogo
                     )));
 
                     if(isset($config['debug']) && $config['debug']){
@@ -418,6 +425,7 @@ class plugins_hipay_public extends plugins_hipay_db{
                     $isSend = $this->mail->send_email($recipient['mail_contact'],$tpl,$data,$this->setTitleMail(),$sender);
                     if(!$send) $send = $isSend;
                 }
+                $this->mail->send_email($data['email'],$tpl,$data,$this->setTitleMail());
                 /*if($send)
                     $this->getNotify('success');
                 else
@@ -457,7 +465,7 @@ class plugins_hipay_public extends plugins_hipay_db{
                                 if($operation == 'authorization'){
 
                                 } elseif ($operation == 'capture') {
-
+                                    $merchantdatas['amount'] = $amount;
                                     $this->send_email($emailClient, $merchantdatas);
 
                                 }elseif($operation == 'reject'){
@@ -469,10 +477,9 @@ class plugins_hipay_public extends plugins_hipay_db{
 
                     break;
                 case 'urlAccept':
-                    break;
                 case 'urlDecline':
-                    break;
                 case 'urlCancel':
+                $this->template->display('hipay/index.tpl');
                     break;
             }
         }else{

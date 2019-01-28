@@ -21,7 +21,6 @@
                                 <tr>
                                     <td>
                                         <h4>{$data.title}</h4>
-                                        <p>{$data.content|replace:'\n':'<br />'}</p>
                                     </td>
                                     <td class="expander"></td>
                                 </tr>
@@ -44,7 +43,13 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <h5>{#mail_from#|ucfirst} {$data.firstname}&nbsp;{$data.lastname}</h5>
+                                        <h5>{#mail_from#|ucfirst} {$companyData.name}</h5>
+                                        <p>
+                                            <a href="{$data.url}" target="_blank" title="{$data.productname}" style="text-decoration: none; font-size: 46px; padding: 15px;">
+                                                <img src="{$data.img}" alt="{$data.productname}"/>
+                                            </a>
+                                        </p>
+                                        <p>{$data.lastname|ucfirst} {$data.firstname|ucfirst}</p>
                                         {if $data.address != null}
                                             <p>{$data.address|ucfirst}, {$data.postcode} {$data.city}</p>
                                         {/if}
@@ -52,6 +57,9 @@
                                             <p>{#mail_phone#|ucfirst}&nbsp;: {$data.phone}</p>
                                         {/if}*}
                                         <p>{#mail_email#|ucfirst}&nbsp;: <a href="mailto:{$data.email}">{$data.email}</a></p>
+                                        <p>{#product_name#} : {$data.productname}</p>
+                                        <p>{#content#} : {$data.content|replace:'\n':'<br />'}</p>
+                                        <p>{#total_mail_amount#} : {$data.amount}€</p>
                                     </td>
                                 </tr>
                             </table>
