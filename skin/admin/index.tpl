@@ -46,9 +46,9 @@
                                     <div class="form-group">
                                         <label for="formaction">Form Action* :</label>
                                         <select name="formaction" id="formaction" class="form-control required" required>
-                                            <option value="" selected="">Sélectionner une action</option>
-                                            <option selected="" value="test">Test</option>
-                                            <option value="production">Production</option>
+                                            <option value="">Sélectionner une action</option>
+                                            <option value="test"{if $hipay.formaction eq 'test'} selected{/if}>Test</option>
+                                            <option value="production"{if $hipay.formaction eq 'production'} selected{/if}>Production</option>
                                         </select>
                                     </div>
                                 </div>

@@ -21,6 +21,7 @@
                                 <tr>
                                     <td>
                                         <h4>{$data.title}</h4>
+                                        <p>{$data.content|replace:'\n':'<br />'}</p>
                                     </td>
                                     <td class="expander"></td>
                                 </tr>

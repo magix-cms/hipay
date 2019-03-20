@@ -71,6 +71,15 @@ class plugins_hipay_admin extends plugins_hipay_db
         }
     }
 
+	/**
+	 * Method to override the name of the plugin in the admin menu
+	 * @return string
+	 */
+	public function getExtensionName()
+	{
+		return $this->template->getConfigVars('hipay_plugin');
+	}
+
 
     /**
      * Assign data to the defined variable or return the data
@@ -262,7 +271,7 @@ class plugins_hipay_admin extends plugins_hipay_db
                         'wsLogin'              =>  $this->wsLogin,
                         'wsPassword'           =>  $this->wsPassword,
                         'websiteId'            =>  $this->websiteId,
-                        'customerIpAddress'    =>  $this->customerIpAddress,
+                        //'customerIpAddress'    =>  $this->customerIpAddress,
                         'signkey'              =>  $this->signkey,
                         'formaction'           =>  $this->formaction,
                         'categoryId'           =>  isset($this->categoryId) ? $this->categoryId : NULL,
@@ -279,7 +288,7 @@ class plugins_hipay_admin extends plugins_hipay_db
                         'wsLogin'              =>  $this->wsLogin,
                         'wsPassword'           =>  $this->wsPassword,
                         'websiteId'            =>  $this->websiteId,
-                        'customerIpAddress'    =>  $this->customerIpAddress,
+                        //'customerIpAddress'    =>  $this->customerIpAddress,
                         'signkey'              =>  $this->signkey,
                         'formaction'           =>  $this->formaction,
                         'categoryId'           =>  NULL,
