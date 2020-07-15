@@ -16,7 +16,7 @@ class plugins_hipay_public extends plugins_hipay_db{
         $config,
         $settings,
         $about;
-    public $purchase,$custom,$urlStatus;
+    public $purchase,$custom,$urlStatus,$payment_plugin = true;
 
     /**
      * plugins_hipay_public constructor.
@@ -28,7 +28,7 @@ class plugins_hipay_public extends plugins_hipay_db{
         $this->header = new http_header();
         $this->data = new frontend_model_data($this,$this->template);
         $this->getlang = $this->template->lang;
-        $this->mail = new frontend_model_mail('hipay');
+        $this->mail = new frontend_model_mail($this->template,'hipay');
         $this->modelDomain = new frontend_model_domain($this->template);
         $this->about = new frontend_model_about($this->template);
         $formClean = new form_inputEscape();
@@ -38,11 +38,9 @@ class plugins_hipay_public extends plugins_hipay_db{
         if (http_request::isPost('custom')) {
             $this->custom = $formClean->arrayClean($_POST['custom']);
         }
-
         if (http_request::isGet('urlStatus')) {
             $this->urlStatus = $formClean->simpleClean($_GET['urlStatus']);
         }
-
     }
 
     /**
@@ -100,6 +98,9 @@ class plugins_hipay_public extends plugins_hipay_db{
         $baseUrl = http_url::getUrl();
         $lang = $this->getlang;
         $setConfig['plugin'] = isset($setConfig['plugin']) ? $setConfig['plugin'] : false;
+        if($setConfig['urlCallback']){
+            
+        }
         if($setConfig['plugin']) {
             $url = $baseUrl . '/'. $lang . '/' . $setConfig['plugin'] . '/';
             return array(
@@ -110,6 +111,33 @@ class plugins_hipay_public extends plugins_hipay_db{
             );
         }
     }
+
+    /*
+    private function setUrl($setConfig){
+        $baseUrl = http_url::getUrl();
+        $lang = $this->getlang;
+        $setConfig['plugin'] = isset($setConfig['plugin']) ? $setConfig['plugin'] : false;
+        $newData = array();
+        if($setConfig['local']){
+            $url = $baseUrl . '/'. $lang . '/hipay/';
+            $newData['callback'] = $url . '?urlStatus=urlCallback';
+            $newData['accept'] = $url . '?urlStatus=urlAccept';
+            $newData['decline'] = $url . '?urlStatus=urlDecline';
+            $newData['cancel'] = $url . '?urlStatus=urlCancel';
+        }else{
+            $url = $baseUrl . '/'. $lang . '/'.$setConfig['plugin'].'/';
+            if(isset($setConfig['urlCallback']) && $setConfig['urlCallback']){
+                $newData['callback'] = $setConfig['urlCallback'];
+            }else{
+                $newData['callback'] = $url . '?urlStatus=urlCallback';
+            }
+
+            $newData['accept'] = $url . '?urlStatus=urlAccept';
+            $newData['decline'] = $url . '?urlStatus=urlDecline';
+            $newData['cancel'] = $url . '?urlStatus=urlCancel';
+        }
+        return $newData;
+    }*/
 
     /**
      * Retourne les données enregistrées dans la base de données pour le compte hipay
@@ -476,13 +504,29 @@ class plugins_hipay_public extends plugins_hipay_db{
                     }
 
                     break;
-                case 'urlAccept':
-                case 'urlDecline':
-                case 'urlCancel':
-                $this->template->display('hipay/index.tpl');
-                    break;
+                default:
+                    if(isset($_COOKIE['mc_cart'])) {
+                        $status = 'pending';
+                        switch ($this->urlStatus) {
+                            case 'urlAccept':
+                                $status = 'success';
+                                break;
+                            case 'urlDecline':
+                                $status = 'error';
+                                break;
+                            case 'urlCancel':
+                                $status = 'canceled';
+                                break;
+                        }
+
+                        header("location:/$this->getlang/cartpay/order/?step=done_step&status=$status");
+                    }
+                    else {
+                        $this->template->display('hipay/index.tpl');
+                    }
             }
-        }else{
+        }
+        else {
             if(isset($this->purchase)) {
                 $freeData = array();
                 //$data = array('order' => 'myorder', 'shipping' => '14');

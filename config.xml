@@ -23,6 +23,11 @@
 			<version>3.1</version>
 			<phase>Stable</phase>
 		</release>
+		<bind>
+			<plugin>
+				<name>cartpay</name>
+			</plugin>
+		</bind>
 		<support>
 			<ticket href="https://github.com/magix-cms/hipay/issues" />
 			<git href="https://github.com/magix-cms/hipay" />
