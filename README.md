@@ -37,7 +37,16 @@ Ce plugin est dédié a Magix CMS et travail avec Hipay Wallet et Hipay Direct.
     'mydata1'=>'lorem ipsum'
  ));
 ````
-
+####Exemple de formulaire :
+```smarty
+<form method="post" action="{$url}/{$lang}/hipay/">
+    <input type="hidden" name="purchase[amount]" value="{$price|number_format:2:',':'&thinsp;'}" />
+    <input type="hidden" name="purchase[email]" value="mymail@mail.tld"/>
+    <input type="hidden" name="callback" value="myplugin"/>
+    <input type="hidden" name="redirect" value="myplugin"/>
+    <input type="hidden" name="custom[mydata1]" value="lorem ipsum"/>
+</form>
+````
  Ressources
  -----
   * https://www.hipay.com

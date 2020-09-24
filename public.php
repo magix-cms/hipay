@@ -16,7 +16,7 @@ class plugins_hipay_public extends plugins_hipay_db{
         $config,
         $settings,
         $about;
-    public $purchase,$custom,$urlStatus,$payment_plugin = true;
+    public $purchase,$custom,$urlStatus,$payment_plugin = true,$callback,$redirect;
 
     /**
      * plugins_hipay_public constructor.
@@ -40,6 +40,14 @@ class plugins_hipay_public extends plugins_hipay_db{
         }
         if (http_request::isGet('urlStatus')) {
             $this->urlStatus = $formClean->simpleClean($_GET['urlStatus']);
+        }
+        if (http_request::isGet('redirect')) {
+            $this->redirect = $formClean->simpleClean($_GET['redirect']);
+        }elseif (http_request::isPost('redirect')) {
+            $this->redirect = $formClean->simpleClean($_POST['redirect']);
+        }
+        if (http_request::isPost('callback')) {
+            $this->callback = $formClean->simpleClean($_POST['callback']);
         }
     }
 
@@ -98,16 +106,25 @@ class plugins_hipay_public extends plugins_hipay_db{
         $baseUrl = http_url::getUrl();
         $lang = $this->getlang;
         $setConfig['plugin'] = isset($setConfig['plugin']) ? $setConfig['plugin'] : false;
-        if($setConfig['urlCallback']){
-            
-        }
+
         if($setConfig['plugin']) {
             $url = $baseUrl . '/'. $lang . '/' . $setConfig['plugin'] . '/';
+            if(isset($this->callback)){
+                $callback = $baseUrl . '/'. $lang . '/' . $this->callback . '/';
+            }else{
+                $callback = $url;
+            }
+            if(isset($this->redirect)){
+                $redirect = '&redirect='.$this->redirect;
+            }else{
+                $redirect = '';
+            }
+            isset($this->redirect) ? '&redirect='.$this->redirect : '';
             return array(
-                'callback' => $url . '?urlStatus=urlCallback',
-                'accept' => $url . '?urlStatus=urlAccept',
-                'decline' => $url . '?urlStatus=urlDecline',
-                'cancel' => $url . '?urlStatus=urlCancel'
+                'callback' => $callback . '?urlStatus=urlCallback',
+                'accept' => $url . '?urlStatus=urlAccept'.$redirect,
+                'decline' => $url . '?urlStatus=urlDecline'.$redirect,
+                'cancel' => $url . '?urlStatus=urlCancel'.$redirect
             );
         }
     }
@@ -522,6 +539,10 @@ class plugins_hipay_public extends plugins_hipay_db{
                         header("location:/$this->getlang/cartpay/order/?step=done_step&status=$status");
                     }
                     else {
+                        if(isset($this->redirect)){
+                            $baseUrl = http_url::getUrl();
+                            header( "Refresh: 5;URL=$baseUrl/$this->getlang/$this->redirect/" );
+                        }
                         $this->template->display('hipay/index.tpl');
                     }
             }
