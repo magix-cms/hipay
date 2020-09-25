@@ -541,7 +541,7 @@ class plugins_hipay_public extends plugins_hipay_db{
                     else {
                         if(isset($this->redirect)){
                             $baseUrl = http_url::getUrl();
-                            header( "Refresh: 5;URL=$baseUrl/$this->getlang/$this->redirect/" );
+                            header( "Refresh: 3;URL=$baseUrl/$this->getlang/$this->redirect/" );
                         }
                         $this->template->display('hipay/index.tpl');
                     }
